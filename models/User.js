@@ -1,11 +1,9 @@
 import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
-const ToDoSchema = new Schema({
-  title: String,
-  author: String,
-  body: String,
-  comments: [{ body: String, date: Date }],
-  date: { type: Date, default: Date.now },
-  hidden: Boolean,
+const UserSchema = new Schema({
+  name: String,
+  address: String,
 });
+
+export default mongoose.model("User", UserSchema);

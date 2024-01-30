@@ -1,12 +1,54 @@
-const express = require("express");
-const axios = require("axios");
-const cors = require("cors");
-const bodyParser = require("body-parser");
+import express from "express";
+import axios from "axios";
+import cors from "cors";
+import bodyParser from "body-parser";
+import ToDo from "./models/Todo.js";
+import { config } from 'dotenv'
+import mongoose from 'mongoose';
 
+config();
 const app = express();
 
 app.use(cors());
+app.use(bodyParser.json());
 app.use(bodyParser.text());
+
+app.get("/api/todos", async (req, res) => {
+  const todos = await ToDo.find();
+  res.send(todos);
+});
+
+app.get("/api/todos/:id", async (req, res) => {
+  const id = req.params.id;
+  const todos = await ToDo.findById(id);
+  res.send(todos);
+});
+
+app.delete("/api/todos/:id", async (req, res) => {
+  const id = req.params.id;
+  const todos = await ToDo.findByIdAndDelete(id);
+  res.send(todos);
+});
+
+app.post("/api/todos", async (req, res) => {
+  const todos = await ToDo.create(req.body);
+  res.send(todos);
+});
+
+app.put("/api/todos/:id", async (req, res) => {
+  const id = req.params.id;
+  const todo = await ToDo.findByIdAndUpdate(id, req.body);
+  res.send(todos);
+});
+
+app.patch("/api/todos/:id", async (req, res) => {
+  const id = req.params.id;
+  const todo = await ToDo.findByIdAndUpdate(id, req.body);
+  res.send(todos);
+});
+
+
+
 
 app.get("/", async (req, res) => {
   try {
@@ -50,4 +92,13 @@ app.post("/post", async (req, res) => {
   }
 });
 
-app.listen(3000);
+app.listen(3000, async () => {
+  try {
+    await mongoose.connect(
+      process.env.MONGO_URI
+    )
+    console.log('Server running.')
+  } catch (error) {
+    console.log(error)
+  }
+});
